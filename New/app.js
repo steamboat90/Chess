@@ -17,28 +17,68 @@ $(document).ready(function(){
     var rookWhite = "&#9814;";
     var pawnWhite = "&#9817;";
 
-    //Starting position for the chess pieces
-    var blackStart = [
-        [rookBlack,knightBlack,bishopBlack,queenBlack,kingBlack,bishopBlack,knightBlack,rookBlack],
-        [pawnBlack,pawnBlack,pawnBlack,pawnBlack,pawnBlack,pawnBlack,pawnBlack,pawnBlack]
-    ];
-    
-    var whiteStart = [
-        [pawnWhite,pawnWhite,pawnWhite,pawnWhite,pawnWhite,pawnWhite,pawnWhite,pawnWhite],
-        [rookWhite,knightWhite,bishopWhite,queenWhite,kingWhite,bishopWhite,knightWhite,rookWhite]
-    ];
-    
-    //for each grid item in the grid container
-    var items = document.getElementsByClassName("grid-container").children;
-    alert(items);
-    /*
-    $(".grid-container").each(
-       function(){
-            $(this).css("color", "red");
-       } 
-    );  
-    $(".grid-item-dark").html(rookBlack);
-    $(".grid-item-light").html('&#9812;');
-    */
+    //resopnd to user clicks
+    var firstClick = true;
+    var piece = "";
+    var oldLoc;
+    //if the user clicked on a dark square
+    $(".grid-item-dark").click(function(){
+        //if this is the first click
+        if(firstClick){
+            //if this square is valid
+            if($(this).text() !== ""){
+                firstClick = false;
+                piece = $(this).text();
+                oldLoc = $(this);
+                //change the border width of selected square
+                $(this).css("border-width", "5");
+            }
+        //if this is their second click
+        }else{
+            //if the new square is valid
+            if($(this).text() === ""){
+                $(this).html(piece);
+                oldLoc.html("");
+                firstClick = true;
+                //change border width of old square
+                oldLoc.css("border-width", "0");
+                oldLoc = $(this);
+            //if the new square is not valid
+            }else{
+                oldLoc.css("border-width", "0");
+                firstClick = true;
+            }
+        }
+    }); 
+
+    //if the user clicked on a light square
+    $(".grid-item-light").click(function(){
+        //if this is the first click
+        if(firstClick){
+            //if this square is valid
+            if($(this).text() !== ""){
+                firstClick = false;
+                piece = $(this).text();
+                oldLoc = $(this);
+                //change the border width of selected square
+                $(this).css("border-width", "5");
+            }
+        //if this is their second click
+        }else{
+            //if the new square is valid
+            if($(this).text() === ""){
+                $(this).html(piece);
+                oldLoc.html("");
+                firstClick = true;
+                //change border width of old square
+                oldLoc.css("border-width", "0");
+                oldLoc = $(this);
+            //if the new square is not valid
+            }else{
+                oldLoc.css("border-width", "0");
+                firstClick = true;
+            }
+        }
+    }); 
 });
 

@@ -6,7 +6,7 @@
 }
 .grid-item-light{
     padding-top: 4px;
-    /*border: 1px solid black;*/
+    border: 0px solid #baca44;
     text-align: center;
     font-size:72px;
     background-color: #eeeed2;
@@ -14,7 +14,7 @@
 
 .grid-item-dark{
     padding-top: 4px;
-    /*border: 1px solid black;*/
+    border: 0px solid #baca44;
     text-align: center;
     font-size:72px;
     background-color: #769656;

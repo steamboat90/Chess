@@ -102,6 +102,7 @@ $(document).ready(function(){
             }
         }
     }); 
+    //The parameter "p" represents the piece that is sent to the function
     function isValid(p) {
         //if this is the first click and the piece isn't empty
         if(p.text() !== "" && firstClick){
@@ -185,13 +186,166 @@ $(document).ready(function(){
 
                     //|---------------------ROOK--------------------|
                     //If the piece is a rook
-                    if(oldLoc.text() == rookWhite){
+                    if(oldLoc.text() === rookWhite){
                         //if the new position is in a straight line
+                        var positionsVert = [];
+                        var positionsHori = [];
                         if(newIndex[0] == oldIndex[0]){
+                            //loop through each grid item
+                            $(".grid-container").children().each(function(){
+                                var id = $(this).attr("id");
+                                //if the id is in the same lane and the 
+                                //  new position is horizontal of the rook's 
+                                //  original position
+                                if(id.substring(0,1) === (oldIndex[0] + "")){
+                                    positionsHori.push($(this).text());
+                                }
+                            });
+                            //loop through positionsVert in the WEST direction
+                            //  to see if the new index is not a valid position 
+                            for(var i = oldIndex[1]-1; i >= 0; i--){
+                                if(positionsHori[i] !== "" && newIndex[1] < i){
+                                    return false;
+                                }
+                            }
+                            //loop through positionsVert in the East direction
+                            //  to see if the new index is not a valid position 
+                            for(var i = oldIndex[1]+1; i < 8; i++){
+                                if(positionsHori[i] !== "" && newIndex[1] > i){
+                                    return false;
+                                }
+                            }
                             return true;
                         }else if(newIndex[1] == oldIndex[1]){
+                            //loop through each grid item
+                            $(".grid-container").children().each(function(){
+                                var id = $(this).attr("id");
+                                //if the id is in the same lane and the 
+                                //  new position is vertical of the rook's 
+                                //  original position
+                                if(id.substring(1) === (oldIndex[1] + "")){
+                                    positionsVert.push($(this).text());
+                                }
+                            });
+                            //loop through positionsVert in the NORTH direction
+                            //  to see if the new index is not a valid position 
+                            for(var i = oldIndex[0]-1; i >= 0; i--){
+                                if(positionsVert[i] !== "" && newIndex[0] < i){
+                                    return false;
+                                }
+                            }
+                            //loop through positionsVert in the SOUTH direction
+                            //  to see if the new index is not a valid position 
+                            for(var i = oldIndex[0]+1; i < 8; i++){
+                                if(positionsVert[i] !== "" && newIndex[0] > i){
+                                    return false;
+                                }
+                            }
                             return true;
                         }
+                    }
+                    //|---------------------END---------------------|
+
+                    //|--------------------BISHOP-------------------|
+                    //if the piece is a bishop
+                    if(oldLoc.text() === bishopWhite){
+                        console.log(oldIndex + "\n" + newIndex);
+                        var positionsNW = [];
+                        var positionsNE = [];
+                        var positionsSW = [];
+                        var positionsSE = [];
+                        //if the new position is not diagonal of the original
+                        //  position, return false
+                        if(!(oldIndex[0] - newIndex[0] == oldIndex[1] - newIndex[1]
+                            && oldIndex[0] - newIndex[0] > 0) &&
+                           !(oldIndex[0] - newIndex[0] == oldIndex[1] - newIndex[1]
+                            && oldIndex[0] - newIndex[0] < 0) &&
+                           !(oldIndex[0] - newIndex[0] == -1 * (oldIndex[1] - newIndex[1])
+                           && oldIndex[0] - newIndex[0] > 0) &&
+                           !(oldIndex[0] - newIndex[0] == -1 * (oldIndex[1] - newIndex[1])
+                           && oldIndex[0] - newIndex[0] < 0)){
+                               return false;
+                           }
+                        //loop through each grid item and add them to their
+                        //  respective arrays depending on their location 
+                        //  relative to the original position
+                        $(".grid-container").children().each(function(){
+                            var id = $(this).attr("id");
+                            var x = parseInt(id.substring(0,1));
+                            var y = parseInt(id.substring(1));
+                            //if the id is to the NW of the original position
+                            if(oldIndex[0] - x == oldIndex[1] - y && oldIndex[0] - x > 0){
+                                positionsNW.push($(this).text());
+                            }
+                            //if the id is to the SE of the original position
+                            if(oldIndex[0] - x == oldIndex[1] - y && oldIndex[0] - x < 0){
+                                positionsSE.push($(this).text());
+                            }
+                            //if the id is to the NE of the original position
+                            if(oldIndex[0] - x == -1 * (oldIndex[1] - y)
+                            && oldIndex[0] - x > 0){
+                                positionsNE.push($(this).text());
+                            }
+                            //if the id is to the SW of the original position
+                            if(oldIndex[0] - x == -1 * (oldIndex[1] - y)
+                            && oldIndex[0] - x < 0){
+                                positionsSW.push($(this).text());
+                            }
+                        });
+                        console.log("NW: " + positionsNW);
+                        console.log("NE: " + positionsNE);
+                        console.log("SW: " + positionsSW);
+                        console.log("SE: " + positionsSE);
+
+                        //if the new position is to the NORTHWEST
+                        //  of the original position
+                        if(oldIndex[0] - newIndex[0] == oldIndex[1] - newIndex[1]
+                            && oldIndex[0] - newIndex[0] > 0){
+                            //loop through positionsNW to determine if the new
+                            //  location is valid
+                            for(var i=positionsNW.length-1, j=oldIndex[0]-1, k=oldIndex[1]-1; i>=0; i--,j--,k--){
+                                if(positionsNW[i] !== "" && newIndex[0] < j && newIndex[1] < k){
+                                    return false;
+                                }
+                            }
+                        }
+                        //if the new position is to the SOUTHEAST
+                        //  of the original position
+                        if(oldIndex[0] - newIndex[0] == oldIndex[1] - newIndex[1]
+                            && oldIndex[0] - newIndex[0] < 0){
+                            //loop through positionsSE to determine if the new
+                            //  location is valid
+                            for(var i=0, j=oldIndex[0]+1, k=oldIndex[1]+1; i<positionsSE.length; i++,j++,k++){
+                                if(positionsSE[i] !== "" && newIndex[0] > j && newIndex[1] > k){
+                                    return false;
+                                }
+                            }
+                        }
+                        //if the new position is to the NORTHEAST
+                        //  of the original position
+                        if(oldIndex[0] - newIndex[0] == -1 * (oldIndex[1] - newIndex[1])
+                            && oldIndex[0] - newIndex[0] > 0){
+                            //loop through positionsNE to determine if the new
+                            //  location is valid
+                            for(var i=positionsNE.length-1, j=oldIndex[0]-1, k=oldIndex[1]+1; i>=0; i--,j--,k++){
+                                if(positionsNE[i] !== "" && newIndex[0] < j && newIndex[1] > k){
+                                    return false;
+                                }
+                            }
+                        }
+                        //if the new position is to the SOUTHWEST
+                        //  of the original position
+                        if(oldIndex[0] - newIndex[0] == -1 * (oldIndex[1] - newIndex[1])
+                            && oldIndex[0] - newIndex[0] < 0){
+                            //loop through positionsSW to determine if the new
+                            //  location is valid
+                            for(var i=0, j=oldIndex[0]+1, k=oldIndex[1]-1; i<positionsSW.length; i++,j++,k--){
+                                if(positionsSE[i] !== "" && newIndex[0] > j && newIndex[1] < k){
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
                     }
                     //|---------------------END---------------------|
                 }
@@ -263,6 +417,171 @@ $(document).ready(function(){
                                    return true;
                             }
                         }
+                    }
+                    //|---------------------END---------------------|
+
+                    //|---------------------ROOK--------------------|
+                    //If the piece is a rook
+                    if(oldLoc.text() == rookBlack){
+                        //if the new position is in a straight line
+                        var positionsVert = [];
+                        var positionsHori = [];
+                        if(newIndex[0] == oldIndex[0]){
+                            //loop through each grid item
+                            $(".grid-container").children().each(function(){
+                                var id = $(this).attr("id");
+                                //if the id is in the same lane and the 
+                                //  new position is horizontal of the rook's 
+                                //  original position
+                                if(id.substring(0,1) === (oldIndex[0] + "")){
+                                    positionsHori.push($(this).text());
+                                }
+                            });
+                            //loop through positionsVert in the WEST direction
+                            //  to see if the new index is not a valid position 
+                            for(var i = oldIndex[1]-1; i >= 0; i--){
+                                if(positionsHori[i] !== "" && newIndex[1] < i){
+                                    return false;
+                                }
+                            }
+                            //loop through positionsVert in the East direction
+                            //  to see if the new index is not a valid position 
+                            for(var i = oldIndex[1]+1; i < 8; i++){
+                                if(positionsHori[i] !== "" && newIndex[1] > i){
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }else if(newIndex[1] == oldIndex[1]){
+                            //loop through each grid item
+                            $(".grid-container").children().each(function(){
+                                var id = $(this).attr("id");
+                                //if the id is in the same lane and the 
+                                //  new position is vertical of the rook's 
+                                //  original position
+                                if(id.substring(1) === (oldIndex[1] + "")){
+                                    positionsVert.push($(this).text());
+                                }
+                            });
+                            //loop through positionsVert in the NORTH direction
+                            //  to see if the new index is not a valid position 
+                            for(var i = oldIndex[0]-1; i >= 0; i--){
+                                if(positionsVert[i] !== "" && newIndex[0] < i){
+                                    return false;
+                                }
+                            }
+                            //loop through positionsVert in the SOUTH direction
+                            //  to see if the new index is not a valid position 
+                            for(var i = oldIndex[0]+1; i < 8; i++){
+                                if(positionsVert[i] !== "" && newIndex[0] > i){
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }
+                    }
+                    //|---------------------END---------------------|
+
+                    //|--------------------BISHOP-------------------|
+                    //if the piece is a bishop
+                    if(oldLoc.text() === bishopBlack){
+                        console.log(oldIndex + "\n" + newIndex);
+                        var positionsNW = [];
+                        var positionsNE = [];
+                        var positionsSW = [];
+                        var positionsSE = [];
+                        //if the new position is not diagonal of the original
+                        //  position, return false
+                        if(!(oldIndex[0] - newIndex[0] == oldIndex[1] - newIndex[1]
+                            && oldIndex[0] - newIndex[0] > 0) &&
+                           !(oldIndex[0] - newIndex[0] == oldIndex[1] - newIndex[1]
+                            && oldIndex[0] - newIndex[0] < 0) &&
+                           !(oldIndex[0] - newIndex[0] == -1 * (oldIndex[1] - newIndex[1])
+                           && oldIndex[0] - newIndex[0] > 0) &&
+                           !(oldIndex[0] - newIndex[0] == -1 * (oldIndex[1] - newIndex[1])
+                           && oldIndex[0] - newIndex[0] < 0)){
+                               return false;
+                           }
+                        //loop through each grid item and add them to their
+                        //  respective arrays depending on their location 
+                        //  relative to the original position
+                        $(".grid-container").children().each(function(){
+                            var id = $(this).attr("id");
+                            var x = parseInt(id.substring(0,1));
+                            var y = parseInt(id.substring(1));
+                            //if the id is to the NW of the original position
+                            if(oldIndex[0] - x == oldIndex[1] - y && oldIndex[0] - x > 0){
+                                positionsNW.push($(this).text());
+                            }
+                            //if the id is to the SE of the original position
+                            if(oldIndex[0] - x == oldIndex[1] - y && oldIndex[0] - x < 0){
+                                positionsSE.push($(this).text());
+                            }
+                            //if the id is to the NE of the original position
+                            if(oldIndex[0] - x == -1 * (oldIndex[1] - y)
+                            && oldIndex[0] - x > 0){
+                                positionsNE.push($(this).text());
+                            }
+                            //if the id is to the SW of the original position
+                            if(oldIndex[0] - x == -1 * (oldIndex[1] - y)
+                            && oldIndex[0] - x < 0){
+                                positionsSW.push($(this).text());
+                            }
+                        });
+                        console.log("NW: " + positionsNW);
+                        console.log("NE: " + positionsNE);
+                        console.log("SW: " + positionsSW);
+                        console.log("SE: " + positionsSE);
+
+                        //if the new position is to the NORTHWEST
+                        //  of the original position
+                        if(oldIndex[0] - newIndex[0] == oldIndex[1] - newIndex[1]
+                            && oldIndex[0] - newIndex[0] > 0){
+                            //loop through positionsNW to determine if the new
+                            //  location is valid
+                            for(var i=positionsNW.length-1, j=oldIndex[0]-1, k=oldIndex[1]-1; i>=0; i--,j--,k--){
+                                if(positionsNW[i] !== "" && newIndex[0] < j && newIndex[1] < k){
+                                    return false;
+                                }
+                            }
+                        }
+                        //if the new position is to the SOUTHEAST
+                        //  of the original position
+                        if(oldIndex[0] - newIndex[0] == oldIndex[1] - newIndex[1]
+                            && oldIndex[0] - newIndex[0] < 0){
+                            //loop through positionsSE to determine if the new
+                            //  location is valid
+                            for(var i=0, j=oldIndex[0]+1, k=oldIndex[1]+1; i<positionsSE.length; i++,j++,k++){
+                                if(positionsSE[i] !== "" && newIndex[0] > j && newIndex[1] > k){
+                                    return false;
+                                }
+                            }
+                        }
+                        //if the new position is to the NORTHEAST
+                        //  of the original position
+                        if(oldIndex[0] - newIndex[0] == -1 * (oldIndex[1] - newIndex[1])
+                            && oldIndex[0] - newIndex[0] > 0){
+                            //loop through positionsNE to determine if the new
+                            //  location is valid
+                            for(var i=positionsNE.length-1, j=oldIndex[0]-1, k=oldIndex[1]+1; i>=0; i--,j--,k++){
+                                if(positionsNE[i] !== "" && newIndex[0] < j && newIndex[1] > k){
+                                    return false;
+                                }
+                            }
+                        }
+                        //if the new position is to the SOUTHWEST
+                        //  of the original position
+                        if(oldIndex[0] - newIndex[0] == -1 * (oldIndex[1] - newIndex[1])
+                            && oldIndex[0] - newIndex[0] < 0){
+                            //loop through positionsSW to determine if the new
+                            //  location is valid
+                            for(var i=0, j=oldIndex[0]+1, k=oldIndex[1]-1; i<positionsSW.length; i++,j++,k--){
+                                if(positionsSE[i] !== "" && newIndex[0] > j && newIndex[1] < k){
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
                     }
                     //|---------------------END---------------------|
             }

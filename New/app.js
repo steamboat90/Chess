@@ -38,6 +38,14 @@ $(document).ready(function(){
                     pawnBlack];
     var whitePieces = [kingWhite, queenWhite, bishopWhite, knightWhite, rookWhite,
                     pawnWhite];
+    
+    //Variables to determine castling
+    var kingWhiteMoved = false;
+    var kingBlackMoved = false;
+    var rookA1Moved = false;
+    var rookA8Moved = false;
+    var rookH1Moved = false;
+    var rookH8Moved = false;
 
     //resopnd to user clicks
     var firstClick = true;
@@ -103,6 +111,7 @@ $(document).ready(function(){
         }
     }); 
     //The parameter "p" represents the piece that is sent to the function
+    // which is the new location
     function isValid(p) {
         //if this is the first click and the piece isn't empty
         if(p.text() !== "" && firstClick){
@@ -127,11 +136,30 @@ $(document).ready(function(){
                     //|---------------------KING--------------------|
                     //if the piece is a king
                     if(oldLoc.text() === kingWhite){
-                        if(oldIndex[0] == newIndex[0] - 1 ||
-                            oldIndex[1] == newIndex[1] + 1 ||
-                            oldIndex[1] == newIndex[1] - 1 ||
-                            oldIndex[0] == newIndex[0] + 1){
+                        if(Math.abs(oldIndex[0] - newIndex[0]) <= 1 &&
+                            Math.abs(oldIndex[1] - newIndex[1]) <= 1){
+                                kingWhiteMoved = true;
                                 return true;
+                        }
+                        //if they try to castle kingside
+                        if(oldLoc.attr("id") === "74" &&
+                            p.attr("id") === "76" &&
+                            !kingWhiteMoved && !rookA8Moved){
+                            $("#77").html("");
+                            $("#75").html("♖");
+                            kingWhiteMoved = true;
+                            rookA8Moved = true;
+                            return true;
+                        }
+                        //if they try to castle queenside
+                        if(oldLoc.attr("id") === "74" &&
+                            p.attr("id") === "72" &&
+                            !kingWhiteMoved && !rookA1Moved){
+                            $("#70").html("");
+                            $("#73").html("♖");
+                            kingWhiteMoved = true;
+                            rookA1Moved = true;
+                            return true;
                         }
                     }
                     //|---------------------END---------------------|
@@ -231,6 +259,11 @@ $(document).ready(function(){
                                     return false;
                                 }
                             }
+                            if(oldLoc.attr("id") === "70"){
+                                rookA1Moved = true;
+                            }else{
+                                rookA8Moved = true;
+                            }
                             return true;
                         }else if(newIndex[1] == oldIndex[1]){
                             //loop through each grid item
@@ -256,6 +289,11 @@ $(document).ready(function(){
                                 if(positionsVert[i] !== "" && newIndex[0] > i){
                                     return false;
                                 }
+                            }
+                            if(oldLoc.attr("id") === "70"){
+                                rookA1Moved = true;
+                            }else{
+                                rookA8Moved = true;
                             }
                             return true;
                         }
@@ -515,11 +553,30 @@ $(document).ready(function(){
                     //|---------------------KING--------------------|
                     //if the piece is a king
                     if(oldLoc.text() === kingBlack){
-                        if(oldIndex[0] == newIndex[0] - 1 ||
-                            oldIndex[1] == newIndex[1] + 1 ||
-                            oldIndex[1] == newIndex[1] - 1 ||
-                            oldIndex[0] == newIndex[0] + 1){
+                        if(Math.abs(oldIndex[0] - newIndex[0]) <= 1 &&
+                            Math.abs(oldIndex[1] - newIndex[1]) <= 1){
+                                kingBlackMoved = true;
                                 return true;
+                        }
+                        //if they try to castle kingside
+                        if(oldLoc.attr("id") === "04" &&
+                            p.attr("id") === "06" &&
+                            !kingBlackMoved && !rookH8Moved){
+                            $("#07").html("");
+                            $("#05").html("♜");
+                            kingBlackMoved = true;
+                            rookH8Moved = true;
+                            return true;
+                        }
+                        //if they try to castle queenside
+                        if(oldLoc.attr("id") === "04" &&
+                            p.attr("id") === "02" &&
+                            !kingBlackMoved && !rookH1Moved){
+                            $("#00").html("");
+                            $("#03").html("♜");
+                            kingBlackMoved = true;
+                            rookH1Moved = true;
+                            return true;
                         }
                     }
                     //|---------------------END---------------------|
@@ -595,6 +652,7 @@ $(document).ready(function(){
                         //if the new position is in a straight line
                         var positionsVert = [];
                         var positionsHori = [];
+                        
                         if(newIndex[0] == oldIndex[0]){
                             //loop through each grid item
                             $(".grid-container").children().each(function(){
@@ -619,6 +677,11 @@ $(document).ready(function(){
                                 if(positionsHori[i] !== "" && newIndex[1] > i){
                                     return false;
                                 }
+                            }
+                            if(oldLoc.attr("id") === "00"){
+                                rookH1Moved = true;
+                            }else{
+                                rookH8Moved = true;
                             }
                             return true;
                         }else if(newIndex[1] == oldIndex[1]){
@@ -645,6 +708,11 @@ $(document).ready(function(){
                                 if(positionsVert[i] !== "" && newIndex[0] > i){
                                     return false;
                                 }
+                            }
+                            if(oldLoc.attr("id") === "00"){
+                                rookH1Moved = true;
+                            }else{
+                                rookH8Moved = true;
                             }
                             return true;
                         }
